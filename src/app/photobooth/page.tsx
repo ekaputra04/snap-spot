@@ -141,17 +141,17 @@ export default function Photobooth() {
     title,
     textColor,
   }: handleDownloadProps) => {
-    const paddingX = 20; // Padding horizontal
-    const paddingY = 20; // Padding vertical
-    const imageWidth = 640; // Lebar gambar (rasio 16:9)
-    const imageHeight = 360; // Tinggi gambar (rasio 16:9)
-    const spacing = 30; // Jarak antar gambar
-    const textHeight = 100; // Ruang untuk teks di bagian bawah
+    const paddingX = 20;
+    const paddingY = 20;
+    const imageWidth = 640;
+    const imageHeight = 360;
+    const spacing = 30;
+    const textHeight = 100;
     const totalHeight =
       capturedImages.length * (imageHeight + spacing) + textHeight;
 
     const canvas = document.createElement("canvas");
-    canvas.width = imageWidth + paddingX * 2; // Tambahkan padding di kiri & kanan
+    canvas.width = imageWidth + paddingX * 2;
     canvas.height = totalHeight + paddingY * 2;
 
     const ctx = canvas.getContext("2d");
@@ -170,13 +170,11 @@ export default function Photobooth() {
 
       setTimeout(() => {
         ctx.textAlign = "center";
-        ctx.fillStyle = textColor; // Warna teks mengikuti parameter
+        ctx.fillStyle = textColor;
 
-        // Buat title bold
         ctx.font = "28px Arial";
         ctx.fillText(title, canvas.width / 2, totalHeight - textHeight / 2);
 
-        // Tanggal tetap dengan ukuran normal
         ctx.font = "24px Arial";
         ctx.fillText(
           new Date().toLocaleDateString(),
@@ -194,10 +192,14 @@ export default function Photobooth() {
 
   return (
     <>
-      <div className={`${isProcess ? "hidden" : "block"} transition-all pb-16`}>
+      <div
+        className={`${
+          isProcess ? "hidden" : "block"
+        } transition-all pb-16 py-24 lg:pt-0`}
+      >
         <TypographyH2 text="Capture your moments" />
-        <div className="gap-16 grid grid-cols-3 px-8 md:px-16 lg:px-32">
-          <div className="space-y-8 col-span-2">
+        <div className="gap-16 grid grid-cols-1 md:grid-cols-3 px-8 md:px-16 lg:px-32">
+          <div className="space-y-8 md:col-span-2">
             <div className="relative rounded-xl w-full aspect-video overflow-hidden">
               {countdown !== null && (
                 <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 p-4 rounded-full font-bold text-yellow-400 text-6xl animate-ping">
@@ -211,8 +213,8 @@ export default function Photobooth() {
                 className="w-full h-full"
               />
             </div>
-            <div className="flex justify-between items-center gap-4">
-              <div className="flex gap-4">
+            <div className="flex flex-wrap justify-between items-center gap-4">
+              <div className="flex flex-wrap gap-4">
                 <Button
                   onClick={startAutoCapture}
                   disabled={isAutoCapture || capturedImages.length >= 4}
@@ -260,12 +262,12 @@ export default function Photobooth() {
         </div>
       </div>
       <div className={`${isProcess ? "block" : "hidden"} `}>
-        <div className="px-8 md:px-16 lg:px-48">
+        <div className="px-8 md:px-16 lg:px-48 py-24">
           <TypographyH2 text="Customize your photo" />
           {capturedImages.length == 4 && (
-            <div className="flex justify-between">
+            <div className="flex md:flex-row flex-col justify-between space-y-8">
               <div
-                className={`flex flex-col gap-4  p-4 border w-1/3 `}
+                className={`flex flex-col gap-4  p-4 border md:w-1/3 `}
                 style={{ backgroundColor: bgColor }}
               >
                 {capturedImages.map((img, index) => (
@@ -286,7 +288,7 @@ export default function Photobooth() {
                   {date.toLocaleDateString()}
                 </p>
               </div>
-              <div className="w-1/3">
+              <div className="md:w-1/3">
                 <Label htmlFor="title">Title</Label>
                 <Input
                   type="text"
