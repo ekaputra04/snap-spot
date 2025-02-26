@@ -12,7 +12,7 @@ export default function WelcomePage() {
     <>
       <PointerWrapper>
         <BackgroundLines className="-z-20 w-full">
-          <div className="flex flex-col justify-center items-center w-screen h-screen">
+          <div className="flex flex-col justify-center items-center px-8 md:px-16 lg:px-48 w-screen h-screen">
             <TypographyH2 text="Welcome!" />
             <TypographyP text="You have 3 seconds for each shot – choose manual or automatic mode!" />
             <TypographyP text="This photobooth captures 4 pictures in a row. If you choose manual mode, you can retake each photo before moving to the next one. If you go automatic, let the system handle it and enjoy the moment!" />

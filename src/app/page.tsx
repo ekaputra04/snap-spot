@@ -12,8 +12,8 @@ export default function Home() {
     <>
       <PointerWrapper>
         <BackgroundLines className="w-full">
-          <div className="relative flex flex-col justify-center items-center bg-gradient-to-br bg-linear-65 py-16 w-screen h-screen">
-            <TypographyH1 text="Snap Shot" />
+          <div className="relative flex flex-col justify-center items-center bg-gradient-to-br bg-linear-65 px-8 md:px-16 lg:px-48 py-16 w-screen h-screen">
+            <TypographyH1 text="Snap Spot" />
             <TypographyP text="Welcome to Snap Spot' Photobooth! Capture memories, anytime, anywhere." />
             <Link href="/welcome" className="z-50 mt-16">
               <Button className="px-8 py-6 rounded-full">Start</Button>

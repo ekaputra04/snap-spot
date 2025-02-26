@@ -4,6 +4,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { ModeToggle } from "@/components/mode-toggle";
 import { PointerWrapper } from "@/components/magicui/pointer";
+import Link from "next/link";
+import { ShinyButton } from "@/components/magicui/shiny-button";
+import { Github } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +42,11 @@ export default function RootLayout({
           {children}
           <div className="top-8 right-8 z-50 absolute">
             <ModeToggle />
+          </div>
+          <div className="top-8 left-8 z-50 absolute">
+            <Link href={"https://github.com/ekaputra04/snap-spot.git"}>
+              <ShinyButton>View on Github</ShinyButton>
+            </Link>
           </div>
         </ThemeProvider>
       </body>

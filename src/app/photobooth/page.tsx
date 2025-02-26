@@ -349,6 +349,7 @@ export default function Photobooth() {
                   variant={"outline"}
                   onClick={() => {
                     setIsProcess(false);
+                    setCapturedImages([]);
                   }}
                 >
                   Cancel
