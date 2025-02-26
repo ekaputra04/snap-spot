@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { JSX, useEffect, useRef, useState } from "react";
 
 /**
  * @property {React.ReactNode} children - The child elements to be wrapped
@@ -101,7 +101,7 @@ interface PointerProps {
 function Pointer({ x, y }: PointerProps): JSX.Element {
   return (
     <motion.div
-      className="pointer-events-none absolute z-50 h-4 w-4 rounded-full"
+      className="z-50 absolute rounded-full w-4 h-4 pointer-events-none"
       style={{
         top: y,
         left: x,
@@ -124,7 +124,7 @@ function Pointer({ x, y }: PointerProps): JSX.Element {
         fill="currentColor"
         strokeWidth="1"
         viewBox="0 0 16 16"
-        className="h-6 w-6 translate-x-[-12px] translate-y-[-10px] rotate-[-70deg] stroke-white text-black"
+        className="stroke-white w-6 h-6 text-black rotate-[-70deg] translate-x-[-12px] translate-y-[-10px]"
         height="1em"
         width="1em"
         xmlns="http://www.w3.org/2000/svg"
