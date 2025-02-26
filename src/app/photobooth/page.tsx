@@ -143,51 +143,68 @@ export default function Photobooth() {
   }: handleDownloadProps) => {
     const paddingX = 20;
     const paddingY = 20;
-    const imageWidth = 640;
-    const imageHeight = 512;
     const spacing = 30;
     const textHeight = 100;
-    const totalHeight =
-      capturedImages.length * (imageHeight + spacing) + textHeight;
+
+    let totalHeight = textHeight;
+    let maxWidth = 0;
 
     const canvas = document.createElement("canvas");
-    canvas.width = imageWidth + paddingX * 2;
-    canvas.height = totalHeight + paddingY * 2;
-
     const ctx = canvas.getContext("2d");
-    if (ctx) {
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      capturedImages.forEach((img, index) => {
+    if (!ctx) return;
+
+    ctx.fillStyle = bgColor;
+    ctx.textAlign = "center";
+    ctx.fillStyle = textColor;
+
+    const images = capturedImages.map((imgSrc) => {
+      return new Promise<HTMLImageElement>((resolve) => {
         const image = new Image();
-        image.src = img;
-        image.onload = () => {
-          const y = index * (imageHeight + spacing);
-          ctx.drawImage(image, paddingX, y, imageWidth, imageHeight);
-        };
+        image.src = imgSrc;
+        image.onload = () => resolve(image);
+      });
+    });
+
+    Promise.all(images).then((loadedImages) => {
+      loadedImages.forEach((image, index) => {
+        const imgWidth = image.naturalWidth;
+        const imgHeight = image.naturalHeight;
+
+        if (imgWidth > maxWidth) maxWidth = imgWidth;
+
+        totalHeight += imgHeight + spacing;
       });
 
-      setTimeout(() => {
-        ctx.textAlign = "center";
-        ctx.fillStyle = textColor;
+      canvas.width = maxWidth + paddingX * 2;
+      canvas.height = totalHeight + paddingY * 2;
 
-        ctx.font = "28px Arial";
-        ctx.fillText(title, canvas.width / 2, totalHeight - textHeight / 2);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.font = "24px Arial";
-        ctx.fillText(
-          new Date().toLocaleDateString(),
-          canvas.width / 2,
-          totalHeight - textHeight / 4
-        );
+      let currentY = paddingY;
 
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = "snapspot.png";
-        link.click();
-      }, 1000);
-    }
+      loadedImages.forEach((image) => {
+        const imgWidth = image.naturalWidth;
+        const imgHeight = image.naturalHeight;
+
+        ctx.drawImage(image, paddingX, currentY, imgWidth, imgHeight);
+        currentY += imgHeight + spacing;
+      });
+
+      ctx.font = "bold 28px Arial";
+      ctx.fillText(title, canvas.width / 2, totalHeight - textHeight / 2);
+      ctx.font = "24px Arial";
+      ctx.fillText(
+        new Date().toLocaleDateString(),
+        canvas.width / 2,
+        totalHeight - textHeight / 4
+      );
+
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "snapspot.png";
+      link.click();
+    });
   };
 
   return (
