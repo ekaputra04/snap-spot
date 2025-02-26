@@ -186,7 +186,7 @@ export default function Photobooth() {
 
         const link = document.createElement("a");
         link.href = canvas.toDataURL("image/png");
-        link.download = "photobooth_collage.png";
+        link.download = "snapspot.png";
         link.click();
       }, 1000);
     }
@@ -276,8 +276,15 @@ export default function Photobooth() {
                     key={index}
                   />
                 ))}
-                <h2 className="font-semibold text-center">{title}</h2>
-                <p className="-mt-4 text-center">{date.toLocaleDateString()}</p>
+                <h2
+                  className="font-semibold text-center"
+                  style={{ color: textColor }}
+                >
+                  {title}
+                </h2>
+                <p className="-mt-4 text-center" style={{ color: textColor }}>
+                  {date.toLocaleDateString()}
+                </p>
               </div>
               <div className="w-1/3">
                 <Label htmlFor="title">Title</Label>
@@ -325,7 +332,7 @@ export default function Photobooth() {
                   onChange={(e) => setTextColor(e.target.value)}
                 />
               </div>
-              <div className="flex justify-end mt-4">
+              <div className="flex flex-col gap-4 mt-4">
                 <Button
                   onClick={() =>
                     handleDownload({
@@ -335,7 +342,16 @@ export default function Photobooth() {
                     })
                   }
                 >
-                  Download Grid
+                  Download Photo Grid
+                </Button>
+                <Button
+                  className=""
+                  variant={"outline"}
+                  onClick={() => {
+                    setIsProcess(false);
+                  }}
+                >
+                  Cancel
                 </Button>
               </div>
             </div>
