@@ -17,6 +17,7 @@ export default function WelcomePage() {
             <TypographyP text="You have 3 seconds for each shot – choose manual or automatic mode!" />
             <TypographyP text="This photobooth captures 4 pictures in a row. If you choose manual mode, you can retake each photo before moving to the next one. If you go automatic, let the system handle it and enjoy the moment!" />
             <TypographyP text="After the session, download your digital copy and share the fun! 🎉" />
+            <TypographyP text="Your privacy is our priority. We do not collect or store any of your data. All processes happen entirely on your device, ensuring complete privacy and security." />
             <Link href="/photobooth" className="z-50 mt-16">
               <Button className="px-8 py-6 rounded-full">Start</Button>
             </Link>

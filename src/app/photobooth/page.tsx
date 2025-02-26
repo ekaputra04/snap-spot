@@ -238,7 +238,7 @@ export default function Photobooth() {
               <div className="flex flex-wrap gap-4">
                 <Button
                   onClick={startAutoCapture}
-                  disabled={isAutoCapture || capturedImages.length >= 4}
+                  disabled={isAutoCapture || capturedImages.length >= 1}
                 >
                   Start Auto Capture
                 </Button>
@@ -283,7 +283,7 @@ export default function Photobooth() {
         </div>
       </div>
       <div className={`${isProcess ? "block" : "hidden"} `}>
-        <div className="px-8 md:px-16 lg:px-48 py-24">
+        <div className="px-8 md:px-16 lg:px-48 py-24 md:py-8">
           <TypographyH2 text="Customize your photo" />
           {capturedImages.length == 4 && (
             <div className="flex md:flex-row flex-col justify-between space-y-8">
