@@ -1,11 +1,23 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import SplashCursor from "@/blocks/Animations/SplashCursor/SplashCursor";
 import { TypographyH2 } from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
+const themeColors = [
+  { title: "White", color: "#ffffff" },
+  { title: "Black", color: "#000000" },
+  { title: "Pink", color: "#fee2e2" },
+  { title: "Orange", color: "#fed7aa" },
+  { title: "Yellow", color: "#fef08a" },
+  { title: "Green", color: "#bbf7d0" },
+  { title: "Blue", color: "#bfdbfe" },
+  { title: "Purple", color: "#d8b4fe" },
+];
 
 export default function Photobooth() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -14,6 +26,11 @@ export default function Photobooth() {
   const [isAutoCapture, setIsAutoCapture] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isProcess, setIsProcess] = useState(false);
+  const [title, setTitle] = useState("Memories");
+  const [bgColor, setBgColor] = useState("#ffffff");
+  const [textColor, setTextColor] = useState("#000000");
+  const [date, setDate] = useState(new Date());
 
   const startCamera = async () => {
     try {
@@ -21,7 +38,7 @@ export default function Photobooth() {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await new Promise((resolve) => {
-          videoRef.current!.onloadedmetadata = resolve; // Tunggu sampai video siap
+          videoRef.current!.onloadedmetadata = resolve;
         });
       }
     } catch (error) {
@@ -29,8 +46,13 @@ export default function Photobooth() {
     }
   };
 
+  useEffect(() => {
+    console.log("bgColor: ", bgColor);
+    console.log("title: ", title);
+  }, [bgColor, title]);
+
   const captureImage = () => {
-    console.log("Capturing image..."); // Debugging
+    console.log("Capturing image...");
     if (canvasRef.current && videoRef.current) {
       const context = canvasRef.current.getContext("2d");
       if (context) {
@@ -43,7 +65,7 @@ export default function Photobooth() {
         );
         const imageData = canvasRef.current.toDataURL("image/png");
         setCapturedImages((prev) => {
-          if (prev.length >= 4) return prev; // Jangan tambahkan jika sudah 4 gambar
+          if (prev.length >= 4) return prev;
           return [...prev, imageData];
         });
       }
@@ -100,19 +122,85 @@ export default function Photobooth() {
     }
   };
 
+  const handleTitleChange = (title: string) => {
+    setTitle(title);
+  };
+
   useEffect(() => {
     startCamera();
   }, []);
 
+  interface handleDownloadProps {
+    bgColor: string;
+    title: string;
+    textColor: string;
+  }
+
+  const handleDownload = ({
+    bgColor,
+    title,
+    textColor,
+  }: handleDownloadProps) => {
+    const paddingX = 20; // Padding horizontal
+    const paddingY = 20; // Padding vertical
+    const imageWidth = 640; // Lebar gambar (rasio 16:9)
+    const imageHeight = 360; // Tinggi gambar (rasio 16:9)
+    const spacing = 30; // Jarak antar gambar
+    const textHeight = 100; // Ruang untuk teks di bagian bawah
+    const totalHeight =
+      capturedImages.length * (imageHeight + spacing) + textHeight;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = imageWidth + paddingX * 2; // Tambahkan padding di kiri & kanan
+    canvas.height = totalHeight + paddingY * 2;
+
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      capturedImages.forEach((img, index) => {
+        const image = new Image();
+        image.src = img;
+        image.onload = () => {
+          const y = index * (imageHeight + spacing);
+          ctx.drawImage(image, paddingX, y, imageWidth, imageHeight);
+        };
+      });
+
+      setTimeout(() => {
+        ctx.textAlign = "center";
+        ctx.fillStyle = textColor; // Warna teks mengikuti parameter
+
+        // Buat title bold
+        ctx.font = "28px Arial";
+        ctx.fillText(title, canvas.width / 2, totalHeight - textHeight / 2);
+
+        // Tanggal tetap dengan ukuran normal
+        ctx.font = "24px Arial";
+        ctx.fillText(
+          new Date().toLocaleDateString(),
+          canvas.width / 2,
+          totalHeight - textHeight / 4
+        );
+
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "photobooth_collage.png";
+        link.click();
+      }, 1000);
+    }
+  };
+
   return (
     <>
-      <div>
+      <div className={`${isProcess ? "hidden" : "block"} transition-all pb-16`}>
         <TypographyH2 text="Capture your moments" />
         <div className="gap-16 grid grid-cols-3 px-8 md:px-16 lg:px-32">
           <div className="space-y-8 col-span-2">
-            <div className="relative rounded-xl w-full aspect-video">
+            <div className="relative rounded-xl w-full aspect-video overflow-hidden">
               {countdown !== null && (
-                <div className="absolute inset-0 flex justify-center items-center bg-opacity-50 font-bold text-yellow-400 text-6xl">
+                <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 p-4 rounded-full font-bold text-yellow-400 text-6xl animate-ping">
                   {countdown}
                 </div>
               )}
@@ -125,7 +213,10 @@ export default function Photobooth() {
             </div>
             <div className="flex justify-between items-center gap-4">
               <div className="flex gap-4">
-                <Button onClick={startAutoCapture} disabled={isAutoCapture}>
+                <Button
+                  onClick={startAutoCapture}
+                  disabled={isAutoCapture || capturedImages.length >= 4}
+                >
                   Start Auto Capture
                 </Button>
                 <Button
@@ -143,15 +234,20 @@ export default function Photobooth() {
                   <RefreshCcw />
                 </Button>
               </div>
-              <div className="flex justify-between items-center gap-4">
+              <div className="flex justify-between items-center gap-2">
                 <p>Captured images </p>
-                <Badge>{capturedImages.length}</Badge>
+                <Badge variant={"outline"}>{capturedImages.length}</Badge>
                 <p>of</p>
-                <Badge>4</Badge>
+                <Badge variant={"outline"}>4</Badge>
               </div>
             </div>
+            {capturedImages.length === 4 && (
+              <Button className="w-full" onClick={() => setIsProcess(true)}>
+                Process Images
+              </Button>
+            )}
           </div>
-          <div className="flex flex-col gap-4 col-span-1">
+          <div className="flex flex-col gap-4 col-span-1 px-8">
             {capturedImages.map((img, index) => (
               <img
                 key={index}
@@ -162,13 +258,97 @@ export default function Photobooth() {
             ))}
           </div>
         </div>
-        <canvas
-          ref={canvasRef}
-          width={640} // Sesuaikan dengan lebar video
-          height={480} // Sesuaikan dengan tinggi video
-          style={{ display: "none" }} // Sembunyikan canvas dari tampilan
-        />
       </div>
+      <div className={`${isProcess ? "block" : "hidden"} `}>
+        <div className="px-8 md:px-16 lg:px-48">
+          <TypographyH2 text="Customize your photo" />
+          {capturedImages.length == 4 && (
+            <div className="flex justify-between">
+              <div
+                className={`flex flex-col gap-4  p-4 border w-1/3 `}
+                style={{ backgroundColor: bgColor }}
+              >
+                {capturedImages.map((img, index) => (
+                  <img
+                    src={img}
+                    alt="polaroid"
+                    className="object-cover aspect-video"
+                    key={index}
+                  />
+                ))}
+                <h2 className="font-semibold text-center">{title}</h2>
+                <p className="-mt-4 text-center">{date.toLocaleDateString()}</p>
+              </div>
+              <div className="w-1/3">
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  type="text"
+                  className="bg-white dark:bg-background"
+                  id="title"
+                  placeholder="Title"
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                />
+                <div className="flex flex-wrap gap-4 mt-8">
+                  {themeColors.map((color, index) => (
+                    <Button
+                      variant={"outline"}
+                      className={`px-4 py-2 border  ${
+                        bgColor == color.color ? `bg-black text-white` : ""
+                      } `}
+                      key={index}
+                      onClick={() => {
+                        setBgColor(color.color);
+                      }}
+                    >
+                      {color.title}
+                    </Button>
+                  ))}
+                </div>
+                <Label htmlFor="bgColor" className="block mt-4">
+                  Background Color
+                </Label>
+                <Input
+                  type="color"
+                  id="bgColor"
+                  className="mt-2 w-32"
+                  value={bgColor}
+                  onChange={(e) => setBgColor(e.target.value)}
+                />
+                <Label htmlFor="textColor" className="block mt-4">
+                  Text Color
+                </Label>
+                <Input
+                  type="color"
+                  id="textColor"
+                  className="mt-2 w-32"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
+                />
+              </div>
+              <div className="flex justify-end mt-4">
+                <Button
+                  onClick={() =>
+                    handleDownload({
+                      bgColor: bgColor,
+                      title: title,
+                      textColor: textColor,
+                    })
+                  }
+                >
+                  Download Grid
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <canvas
+        className="hidden"
+        ref={canvasRef}
+        width={640}
+        height={480}
+        style={{ display: "none" }}
+      />
     </>
   );
 }

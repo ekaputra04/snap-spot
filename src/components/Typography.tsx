@@ -8,7 +8,7 @@ export function TypographyH1({ text }: { text: string }) {
 
 export function TypographyH2({ text }: { text: string }) {
   return (
-    <h2 className="z-50 relative bg-clip-text bg-gradient-to-b from-neutral-900 dark:from-neutral-600 to-neutral-700 dark:to-white py-2 md:py-10 font-sans font-bold text-transparent text-xl md:text-2xl lg:text-4xl text-center tracking-tight">
+    <h2 className="z-50 relative bg-clip-text bg-gradient-to-b from-neutral-900 dark:from-neutral-600 to-neutral-700 dark:to-white py-2 md:py-6 font-sans font-semibold text-transparent text-lg md:text-xl lg:text-2xl text-center tracking-tight">
       {text}
     </h2>
   );
