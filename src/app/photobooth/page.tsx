@@ -49,7 +49,8 @@ export default function Photobooth() {
   useEffect(() => {
     console.log("bgColor: ", bgColor);
     console.log("title: ", title);
-  }, [bgColor, title]);
+    console.log("textColor: ", textColor);
+  }, [bgColor, title, textColor]);
 
   const captureImage = () => {
     console.log("Capturing image...");
@@ -154,10 +155,6 @@ export default function Photobooth() {
 
     if (!ctx) return;
 
-    ctx.fillStyle = bgColor;
-    ctx.textAlign = "center";
-    ctx.fillStyle = textColor;
-
     const images = capturedImages.map((imgSrc) => {
       return new Promise<HTMLImageElement>((resolve) => {
         const image = new Image();
@@ -167,7 +164,7 @@ export default function Photobooth() {
     });
 
     Promise.all(images).then((loadedImages) => {
-      loadedImages.forEach((image, index) => {
+      loadedImages.forEach((image) => {
         const imgWidth = image.naturalWidth;
         const imgHeight = image.naturalHeight;
 
@@ -179,6 +176,8 @@ export default function Photobooth() {
       canvas.width = maxWidth + paddingX * 2;
       canvas.height = totalHeight + paddingY * 2;
 
+      // Mengatur warna background
+      ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       let currentY = paddingY;
@@ -191,8 +190,13 @@ export default function Photobooth() {
         currentY += imgHeight + spacing;
       });
 
+      // Mengatur warna teks
+      ctx.fillStyle = textColor;
+      ctx.textAlign = "center";
+
       ctx.font = "bold 28px Arial";
       ctx.fillText(title, canvas.width / 2, totalHeight - textHeight / 2);
+
       ctx.font = "24px Arial";
       ctx.fillText(
         new Date().toLocaleDateString(),
@@ -272,7 +276,7 @@ export default function Photobooth() {
                 key={index}
                 src={img}
                 alt="preview"
-                className="rounded-lg w-full object-cover aspect-video"
+                className="rounded-lg w-full object-cover"
               />
             ))}
           </div>
@@ -291,7 +295,7 @@ export default function Photobooth() {
                   <img
                     src={img}
                     alt="polaroid"
-                    className="object-cover aspect-video"
+                    className="w-full object-cover"
                     key={index}
                   />
                 ))}
