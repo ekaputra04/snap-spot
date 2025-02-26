@@ -144,7 +144,7 @@ export default function Photobooth() {
     const paddingX = 20;
     const paddingY = 20;
     const imageWidth = 640;
-    const imageHeight = 360;
+    const imageHeight = 512;
     const spacing = 30;
     const textHeight = 100;
     const totalHeight =
@@ -302,7 +302,9 @@ export default function Photobooth() {
                     <Button
                       variant={"outline"}
                       className={`px-4 py-2 border  ${
-                        bgColor == color.color ? `bg-black text-white` : ""
+                        bgColor == color.color
+                          ? `bg-black text-white dark:bg-white dark:text-black`
+                          : ""
                       } `}
                       key={index}
                       onClick={() => {
