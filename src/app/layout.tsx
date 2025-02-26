@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
-import { BackgroundLines } from "@/components/ui/background-lines";
 import { ModeToggle } from "@/components/mode-toggle";
-import SplashCursor from "@/blocks/Animations/SplashCursor/SplashCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,15 +35,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <BackgroundLines className="flex flex-col justify-center items-center w-full">
-            {children}
-            <div className="top-8 right-8 z-50 absolute">
-              <ModeToggle />
-            </div>
-            <div className="top-0 right-0 bottom-0 left-0 absolute">
-              <SplashCursor />
-            </div>
-          </BackgroundLines>
+          {children}
+          <div className="top-8 right-8 z-50 absolute">
+            <ModeToggle />
+          </div>
         </ThemeProvider>
       </body>
     </html>
